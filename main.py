@@ -4,8 +4,7 @@ import shutil
 home_dir = os.path.expanduser("~")
 backup_dir = os.path.join(home_dir, "Dotfiles-Backup")
 
-# We use relative paths here. 
-# Note: Neovim is usually inside .config/nvim
+# List of files or folders to backup
 dotfiles = [
     ".tmux.conf",
     ".config/nvim"  
@@ -14,18 +13,21 @@ dotfiles = [
 def safe_copy(source, destination):
     """
     Smart copy function that handles both files and directories.
-    It also ensures the parent directory of the destination exists.
+    It ignores common junk files (git, cache, temp files) during directory copies.
     """
     # 1. Ensure the parent folder exists (e.g., creates 'Dotfiles-Backup/.config')
     os.makedirs(os.path.dirname(destination), exist_ok=True)
 
+    ignore_rules = shutil.ignore_patterns('.git', '__pycache__', '*.swp', '*.tmp', '.DS_Store')
+
     # 2. Check if source is a directory or a file
     if os.path.isdir(source):
-        # Copy directory (dirs_exist_ok=True allows updating existing backups)
-        shutil.copytree(source, destination, dirs_exist_ok=True)
+        # Copy directory with ignore rules
+        # dirs_exist_ok=True allows us to overwrite/update the backup folder
+        shutil.copytree(source, destination, dirs_exist_ok=True, ignore=ignore_rules)
         print(f"Directory processed: {os.path.basename(destination)}")
     else:
-        # Copy file
+        # Copy file (shutil.copy2 preserves metadata like timestamps)
         shutil.copy2(source, destination)
         print(f"File processed: {os.path.basename(destination)}")
 
