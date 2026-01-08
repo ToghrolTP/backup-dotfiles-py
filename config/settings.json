@@ -1,0 +1,15 @@
+{
+    "backup_folder_name": "Dotfiles-Backup",
+    "items": [
+        ".tmux.conf",
+        ".zshrc",
+        ".config/nvim"
+    ],
+    "ignore_patterns": [
+        ".git",
+        "__pycache__",
+        "*.swp",
+        "*.tmp",
+        ".DS_Store"
+    ]
+}
